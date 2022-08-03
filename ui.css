@@ -1,0 +1,98 @@
+#header {
+    padding: 3px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 90%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#left {
+    order: 1;
+    float: left;
+    width: 40%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#right {
+    display: flex;
+    flex-direction: column;
+    order: 2;
+    flex-grow: 1;
+    float: right;
+    width: 20%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#party-div {
+    position:relative;
+    order: 1;
+    height: 70%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#combat-log {
+    order: 2;
+    height: 20%;
+    flex-grow: 1;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+}
+#char1.character {
+    top: 35%;
+    left: 15%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
+#char2.character {
+    top: 55%;
+    left: 15%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
+#char3.character {
+    top: 35%;
+    left: 30%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
+#char4.character {
+    top: 55%;
+    left: 30%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
+#char5.character {
+    top: 45%;
+    left: 45%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
+#enemy {
+    top: 45%;
+    left: 75%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 2;
+}
