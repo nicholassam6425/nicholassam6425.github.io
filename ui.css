@@ -4,6 +4,18 @@
     border-width: 2px;
     border-color: grey;
 }
+button.save {
+    float: right;
+    overflow: auto;
+}
+button.load {
+    float: right;
+    overflow: auto;
+}
+button.clear-save {
+    float:right;
+    overflow:auto;
+}
 #body {
     display: flex;
     flex-direction: row;
@@ -36,17 +48,19 @@
     position:relative;
     order: 1;
     height: 70%;
+    flex-grow: 1;
     border-style: solid;
     border-width: 2px;
     border-color: grey;
 }
 #combat-log {
     order: 2;
-    height: 20%;
-    flex-grow: 1;
+    height: 180px;
     border-style: solid;
     border-width: 2px;
     border-color: grey;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #char1.character {
     top: 35%;
