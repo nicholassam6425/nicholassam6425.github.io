@@ -15,18 +15,22 @@
         <div id="body">
             <div id="left">
                 <div id="currentCharStats">
-                    No Character Selected
+                    <div class="charDropdown">
+                        <button onClick="dropdown()" class="dropdownButton">Characters</button>
+                        <div id="charListDropdown" class="dropdown-content">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="right">
                 <div id="party-div">
                     <!-- temp hiding these so i dont have to deal with em
-                    <button class="character" id="char1" onClick="selectPartyCharacter(1)" disabled>dude1</button>
-                    <button class="character" id="char2" onClick="selectPartyCharacter(2)" disabled>dude2</button>
-                    <button class="character" id="char3" onClick="selectPartyCharacter(3)" disabled>dude3</button>
-                    <button class="character" id="char4" onClick="selectPartyCharacter(4)" disabled>dude4</button>
+                    <button class="character" id="char1" disabled>dude1</button>
+                    <button class="character" id="char2" disabled>dude2</button>
+                    <button class="character" id="char3" disabled>dude3</button>
+                    <button class="character" id="char4" disabled>dude4</button>
                     -->
-                    <button class="character" id="char5" onClick="selectPartyCharacter(5)">John Default</button>
+                    <button class="character" id="char5">John Default</button>
                     <button id="enemy" onClick="clickAttack()">10/10</button>
                 </div>
                 <div id="combat-log">
@@ -35,7 +39,6 @@
             </div>
         </div>
         <script type="text/javascript" src="main.js"></script>
-        <script type="module" src="utilities.js"></script>
     </body>
 </html>
 
