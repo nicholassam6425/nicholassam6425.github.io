@@ -1,21 +1,26 @@
+/* top bar. includes gold, save button, load button, delete save button */
 #header {
     padding: 3px;
     border-style: solid;
     border-width: 2px;
     border-color: grey;
 }
+/* save button */
 button.save {
     float: right;
     overflow: auto;
 }
+/* load button */
 button.load {
     float: right;
     overflow: auto;
 }
+/* delete save button */
 button.clear-save {
     float:right;
     overflow:auto;
 }
+/* everything that isnt the header */
 #body {
     display: flex;
     flex-direction: row;
@@ -25,14 +30,17 @@ button.clear-save {
     border-width: 2px;
     border-color: grey;
 }
+/* character stat list + selector */
 #left {
     order: 1;
     float: left;
     width: 40%;
+    height: 100%;
     border-style: solid;
     border-width: 2px;
     border-color: grey;
 }
+/* party & enemy display + combat log */
 #right {
     display: flex;
     flex-direction: column;
@@ -44,6 +52,7 @@ button.clear-save {
     border-width: 2px;
     border-color: grey;
 }
+/* party & enemy display */
 #party-div {
     position:relative;
     order: 1;
@@ -53,6 +62,7 @@ button.clear-save {
     border-width: 2px;
     border-color: grey;
 }
+/* combat log */
 #combat-log {
     order: 2;
     height: 180px;
@@ -62,47 +72,52 @@ button.clear-save {
     overflow-y: auto;
     overflow-x: hidden;
 }
+/* party member button */
+.character {
+    position: absolute;
+    z-index: 2;
+    border: none;
+    padding: 10px;
+}
+/* top left char */
 #char1.character {
     top: 35%;
     left: 15%;
     width: 100px;
     height: 100px;
-    position: absolute;
-    z-index: 2;
 }
+/* bottom left char */
 #char2.character {
     top: 55%;
     left: 15%;
     width: 100px;
     height: 100px;
-    position: absolute;
-    z-index: 2;
 }
+/* top middle char */
 #char3.character {
     top: 35%;
     left: 30%;
     width: 100px;
     height: 100px;
-    position: absolute;
-    z-index: 2;
 }
+/* bot middle char */
 #char4.character {
     top: 55%;
     left: 30%;
     width: 100px;
     height: 100px;
-    position: absolute;
-    z-index: 2;
 }
+/* frontline char */
 #char5.character {
     top: 45%;
     left: 45%;
     width: 100px;
     height: 100px;
-    position: absolute;
-    z-index: 2;
 }
+/* enemy button */
 #enemy {
+    border: none;
+    padding: 10px;
     top: 45%;
     left: 75%;
     width: 100px;
@@ -110,16 +125,18 @@ button.clear-save {
     position: absolute;
     z-index: 2;
 }
+/* charlist dropdown button */
 .dropdownButton {
     border: none;
     cursor: pointer;
     padding: 10px;
 }
-
+/* div for the dropdown button + dropdown content */
 .charDropdown {
     position: relative;
     display: inline-block;
 }
+/* div for dropdown content */
 .dropdown-content {
     display: none;
     position: absolute;
@@ -127,10 +144,54 @@ button.clear-save {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
-.dropdown-content a {
+/* for each individual dropdown button */
+.dropdown-content button {
     display: block;
     text-decoration: none;
     padding: 12px, 18px;
     color: black;
+    border: none;
+    min-width: 160px;
+    text-align: left;
 }
+.dropdown-content button:disabled {
+    background-color: gray;
+}
+
+#currentCharStats {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#statDisplay {
+    overflow: auto;
+    display:flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.upStatButton {
+    border-radius: 0;
+    background-color: rgb(207, 207, 207);
+    color: black;
+    float:right;
+}
+
+.statRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.statName {
+    width: 20%;
+}
+.statValue {
+    width: 10%;
+}
+.upStat {
+    flex-grow: 1;
+}
+
+/* toggle for dropdown */
 .show {display:block;}

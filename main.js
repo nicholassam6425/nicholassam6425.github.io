@@ -1,3 +1,4 @@
+//probably don't need to give them defaults, but whatever. redundancy is cool!
 var gold = 0;
 var stage = 1;
 var enemysKilledStage = 0;
@@ -45,8 +46,8 @@ class character {
             mas: 0, //spellcasting effectiveness
 
             //maybe combine into retaliation or something
-            rfl: 0, //reflect damage
-            spk: 0 //reflect damage
+            rfl: 0, //reflect damage %
+            spk: 0 //reflect damage flat
         };
         this.xp = 0;
         this.nextLevel = 100;
@@ -55,6 +56,7 @@ class character {
     upStat(stat) {
         this.stats[stat] += 1
         this.updateCharOutputs();
+        selectCharacter(this.name);
     }
     getIdleDamage() {
         return this.idleDamage; 
@@ -98,7 +100,7 @@ function load() {
         //log stuff, then load
         document.getElementById("combat-log").innerHTML = document.getElementById("combat-log").innerHTML + "Save state found. Loading."
         console.log(savegame)
-        //if statements are failsafes
+        //if statements are failsafes. don't want to load undefined into these
         if (typeof savegame.gold !== "undefined") {gold = savegame.gold};
         document.getElementById("gold").innerHTML = gold;
         if (typeof savegame.stage !== "undefined") {stage = savegame.stage};
@@ -107,12 +109,18 @@ function load() {
         if (typeof savegame.partyList !== "undefined") {partyList = savegame.partyList};
         populateCharListDropdown();
     }
+    //start autoattacking
+    autoAttack();
 }
 
 function populateCharListDropdown() {
     var charDiv = document.getElementById("charListDropdown");
-    for (char of charList) {
-        charDiv.innerHTML = charDiv.innerHTML + "<a onclick=\"selectCharacter(" + char.name + ")\">" + char.name + "</a>";
+    for (const [key, value] of Object.entries(charList)) {
+        var btn = document.createElement("button");
+        btn.appendChild(document.createTextNode(key));
+        btn.addEventListener("click", function() {selectCharacter(key);})
+        btn.id = key;
+        charDiv.appendChild(btn);
     }
 }
 
@@ -125,9 +133,16 @@ function startNewGame() {
     enemyHP = 10;
     starterCharacter = new character("John Default");
     charList[starterCharacter.name] = starterCharacter;
-    partyList[5] = (charList[0])
+    addToParty(5, starterCharacter.name);
     document.getElementById("gold").innerHTML = gold;
     populateCharListDropdown();
+}
+
+function addToParty(slot, charname) {
+    partyList[slot] = charList[charname];
+    var partyButton = document.getElementById("char"+slot);
+    partyButton.innerHTML = charname;
+    partyButton.addEventListener("click", function() {selectCharacter(charname)})
 }
 
 function clearSave() {
@@ -149,8 +164,47 @@ function dropdown() {
     document.getElementById("charListDropdown").classList.toggle("show");
 }
 
-function selectCharacter(num) {
+function selectCharacter(charname) {
+    //disable selected character in charlistdropdown
+    toggleButton(document.getElementById(charname));
+    ////add to party button - dropdown for 12345 slots
+    ////how to check if char is already in party?
     
+    var statDisplay = document.getElementById("statDisplay");
+    statDisplay.innerHTML = "";
+    var toggle = false;
+    for (const [key, value] of Object.entries(charList[charname].stats)) {
+        var statRow = document.createElement("div");
+        statRow.className = "statRow";
+        if (toggle) {
+            statRow.style.backgroundColor = "darkgray";
+            toggle = !toggle;
+        } else {
+            statRow.style.backgroundColor = "lightgray";
+            toggle = !toggle;
+        }
+        //display all the stats
+        var statName = document.createElement("div");
+        statName.className = "statName";
+        statName.appendChild(document.createTextNode(key.toUpperCase()));
+        statRow.appendChild(statName);
+
+        var statValue = document.createElement("div");
+        statValue.className = "statValue";
+        statValue.appendChild(document.createTextNode(value));
+        statRow.appendChild(statValue);
+        //upstat button per stat
+        var upStatButton = document.createElement("button");
+        upStatButton.className = "upStatButton";
+        upStatButton.addEventListener("click", function() {charList[charname].upStat(key)});
+        upStatButton.appendChild(document.createTextNode("+"))
+        var upStat = document.createElement("div");
+        upStat.className = "upStat";
+        upStat.appendChild(upStatButton);
+        statRow.appendChild(upStat);
+
+        statDisplay.appendChild(statRow);
+    }
 }
 
 function clickAttack(){
@@ -194,7 +248,7 @@ function writeToLog(message) {
 }
 
 function calculateAtkInterval() {
-    attackInterval = 1000
+    attackInterval = 10000;
 }
 
 function updateElements() {
@@ -202,10 +256,11 @@ function updateElements() {
     document.getElementById("gold").innerHTML = gold;
 }
 
-window.setInterval(function(){
+function autoAttack() {
     calculateAtkInterval();
     idleAttack();
-}, attackInterval)
+    setTimeout(autoAttack, attackInterval);
+}
 
 window.onclick = function(event) {
     if (!event.target.matches(".dropdownButton")) {
@@ -217,5 +272,13 @@ window.onclick = function(event) {
                 openDropdown.classList.remove('show');
             }
         }
+    }
+}
+
+function toggleButton(element) {
+    if (!element.disabled) {
+        element.disabled = true;
+    } else {
+        element.disabled = false;
     }
 }
