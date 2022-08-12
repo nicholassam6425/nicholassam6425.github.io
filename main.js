@@ -14,47 +14,143 @@ class character {
         this.name = name;
         this.level = 1;
         this.stats = {
-            str: 1, //click damage
-            dex: 1, //idle damage
-            int: 1, //spellcasting damage
-            con: 1, //health
-            wis: 1, //mana
-            luk: 1, //chance, drop rate, etc
-            per: 0, //damage reduction
-            pie: 0, //bonuses at certain thresholds
-            pat: 0, //click charge
-            acc: 0, //crit chance
-            ecc: 0, //random reassignment
-            grw: 0, //xp gain
-            spt: 0, //increase damage dealt based on missing hp
-            pty: 0, //more dmg to higher maxhp enemies, but less to lower
-            sdm: 0, //more dmg to lower maxhp enemies, but more to higher
-            qck: 0, //atk speed up, idle damage down
-            pre: 0, //atk speed down, idle damage up
-            gen: 0, //drop rate up, damage down
-            cha: 0, //other party members damage up
-            spd: 0, //atk speed up
-            dom: 0, //click damage up
-            asc: 0, //spell casting up
-            snk: 0, //chance to skip stage
-            vrs: 0, //all stats up a little bit
-            exp: 0, //choose 1 stat, that stat scaling up
-            ten: 0, //cc reduction (??????????????????)
-            agi: 0, //dodge chance
-            sta: 0, //health up
-            hst: 0, //spellcasting cooldown reduction
-            mas: 0, //spellcasting effectiveness
+            str: {
+                value: 1,
+                cost: 1
+            }, //click damage
+            dex: {
+                value: 1,
+                cost: 1
+            }, //idle damage
+            int: {
+                value: 1,
+                cost: 1
+            }, //spellcasting damage
+            con: {
+                value: 1,
+                cost: 1
+            }, //health
+            wis: {
+                value: 1,
+                cost: 1
+            }, //mana
+            luk: {
+                value: 1,
+                cost: 1
+            }, //chance, drop rate, etc
+            per: {
+                value: 0,
+                cost: 1
+            }, //damage reduction
+            pie: {
+                value: 0,
+                cost: 1
+            }, //bonuses at certain thresholds
+            pat: {
+                value: 0,
+                cost: 1
+            }, //click charge
+            acc: {
+                value: 0,
+                cost: 1
+            }, //crit chance
+            ecc: {
+                value: 0,
+                cost: 1
+            }, //random reassignment
+            grw: {
+                value: 0,
+                cost: 1
+            }, //xp gain
+            spt: {
+                value: 0,
+                cost: 1
+            }, //increase damage dealt based on missing hp
+            pty: {
+                value: 0,
+                cost: 1
+            }, //more dmg to higher maxhp enemies, but less to lower
+            sdm: {
+                value: 0,
+                cost: 1
+            }, //more dmg to lower maxhp enemies, but more to higher
+            qck: {
+                value: 0,
+                cost: 1
+            }, //atk speed up, idle damage down
+            pre: {
+                value: 0,
+                cost: 1
+            }, //atk speed down, idle damage up
+            gen: {
+                value: 0,
+                cost: 1
+            }, //drop rate up, damage down
+            cha: {
+                value: 0,
+                cost: 1
+            }, //other party members damage up
+            spd: {
+                value: 0,
+                cost: 1
+            }, //atk speed up
+            dom: {
+                value: 0,
+                cost: 1
+            }, //click damage up
+            asc: {
+                value: 0,
+                cost: 1
+            }, //spell casting up
+            snk: {
+                value: 0,
+                cost: 1
+            }, //chance to skip stage
+            vrs: {
+                value: 0,
+                cost: 1
+            }, //all stats up a little bit
+            exp: {
+                value: 0,
+                cost: 1
+            }, //choose 1 stat, that stat scaling up
+            ten: {
+                value: 0,
+                cost: 1
+            }, //cc reduction (??????????????????)
+            agi: {
+                value: 0,
+                cost: 1
+            }, //dodge chance
+            sta: {
+                value: 0,
+                cost: 1
+            }, //health up
+            hst: {
+                value: 0,
+                cost: 1
+            }, //spellcasting cooldown reduction
+            mas: {
+                value: 0,
+                cost: 1
+            }, //spellcasting effectiveness
 
             //maybe combine into retaliation or something
-            rfl: 0, //reflect damage %
-            spk: 0 //reflect damage flat
+            rfl: {
+                value: 0,
+                cost: 1
+            }, //reflect damage %
+            spk: {
+                value: 0,
+                cost: 1
+            } //reflect damage flat
         };
         this.xp = 0;
         this.nextLevel = 100;
         this.updateCharOutputs();
     }
     upStat(stat) {
-        this.stats[stat] += 1
+        this.stats[stat].value += 1
         this.updateCharOutputs();
         selectCharacter(this.name);
     }
@@ -65,8 +161,8 @@ class character {
         return this.clickDamage;
     }
     updateCharOutputs() {
-        this.clickDamage = 1 + this.stats.str;
-        this.idleDamage = 0 + this.stats.dex;
+        this.clickDamage = this.stats.str.value;
+        this.idleDamage = this.stats.dex.value;
     }
 };
 
@@ -191,7 +287,7 @@ function selectCharacter(charname) {
 
         var statValue = document.createElement("div");
         statValue.className = "statValue";
-        statValue.appendChild(document.createTextNode(value));
+        statValue.appendChild(document.createTextNode(value.value));
         statRow.appendChild(statValue);
         //upstat button per stat
         var upStatButton = document.createElement("button");
@@ -208,16 +304,26 @@ function selectCharacter(charname) {
 }
 
 function clickAttack(){
-    var damage = 1;
-    attack(damage);
-    writeToLog("<br>Clicked for " + damage + " damage.");
+    var totalPartyClickDamage = 0;
+    for (const [key, value] of Object.entries(partyList)) {
+        if (value !== null) {
+            totalPartyClickDamage += value.getClickDamage()
+        }
+    }
+    attack(totalPartyClickDamage);
+    writeToLog("<br>Clicked for " + totalPartyClickDamage + " damage.");
 }
 
 function idleAttack(){
-    var damage = 0;
-    if (damage > 0) {
-        attack(damage);
-        writeToLog("<br>Idly attacked for " + damage + " damage.");
+    var totalPartyIdleDamage = 0
+    for (const [key, value] of Object.entries(partyList)) {
+        if (value !== null) {
+            totalPartyIdleDamage += value.getIdleDamage()
+        }
+    }
+    if (totalPartyIdleDamage > 0) {
+        attack(totalPartyIdleDamage);
+        writeToLog("<br>Idly attacked for " + totalPartyIdleDamage + " damage.");
     }
 }
 
