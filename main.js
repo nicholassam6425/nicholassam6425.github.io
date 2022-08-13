@@ -5,178 +5,36 @@ var enemysKilledStage = 0;
 var enemyMaxHP = 10;
 var enemyHP = 10;
 var charList = {};
-var partyList = {1: null, 2: null, 3: null, 4: null, 5:null};
+var partyList = { 1: null, 2: null, 3: null, 4: null, 5: null };
 var attackInterval = 1000
-
-class character {
-    constructor(name) 
-    {
-        this.name = name;
-        this.level = 1;
-        this.stats = {
-            str: {
-                value: 1,
-                cost: 1
-            }, //click damage
-            dex: {
-                value: 1,
-                cost: 1
-            }, //idle damage
-            int: {
-                value: 1,
-                cost: 1
-            }, //spellcasting damage
-            con: {
-                value: 1,
-                cost: 1
-            }, //health
-            wis: {
-                value: 1,
-                cost: 1
-            }, //mana
-            luk: {
-                value: 1,
-                cost: 1
-            }, //chance, drop rate, etc
-            per: {
-                value: 0,
-                cost: 1
-            }, //damage reduction
-            pie: {
-                value: 0,
-                cost: 1
-            }, //bonuses at certain thresholds
-            pat: {
-                value: 0,
-                cost: 1
-            }, //click charge
-            acc: {
-                value: 0,
-                cost: 1
-            }, //crit chance
-            ecc: {
-                value: 0,
-                cost: 1
-            }, //random reassignment
-            grw: {
-                value: 0,
-                cost: 1
-            }, //xp gain
-            spt: {
-                value: 0,
-                cost: 1
-            }, //increase damage dealt based on missing hp
-            pty: {
-                value: 0,
-                cost: 1
-            }, //more dmg to higher maxhp enemies, but less to lower
-            sdm: {
-                value: 0,
-                cost: 1
-            }, //more dmg to lower maxhp enemies, but more to higher
-            qck: {
-                value: 0,
-                cost: 1
-            }, //atk speed up, idle damage down
-            pre: {
-                value: 0,
-                cost: 1
-            }, //atk speed down, idle damage up
-            gen: {
-                value: 0,
-                cost: 1
-            }, //drop rate up, damage down
-            cha: {
-                value: 0,
-                cost: 1
-            }, //other party members damage up
-            spd: {
-                value: 0,
-                cost: 1
-            }, //atk speed up
-            dom: {
-                value: 0,
-                cost: 1
-            }, //click damage up
-            asc: {
-                value: 0,
-                cost: 1
-            }, //spell casting up
-            snk: {
-                value: 0,
-                cost: 1
-            }, //chance to skip stage
-            vrs: {
-                value: 0,
-                cost: 1
-            }, //all stats up a little bit
-            exp: {
-                value: 0,
-                cost: 1
-            }, //choose 1 stat, that stat scaling up
-            ten: {
-                value: 0,
-                cost: 1
-            }, //cc reduction (??????????????????)
-            agi: {
-                value: 0,
-                cost: 1
-            }, //dodge chance
-            sta: {
-                value: 0,
-                cost: 1
-            }, //health up
-            hst: {
-                value: 0,
-                cost: 1
-            }, //spellcasting cooldown reduction
-            mas: {
-                value: 0,
-                cost: 1
-            }, //spellcasting effectiveness
-
-            //maybe combine into retaliation or something
-            rfl: {
-                value: 0,
-                cost: 1
-            }, //reflect damage %
-            spk: {
-                value: 0,
-                cost: 1
-            } //reflect damage flat
-        };
-        this.xp = 0;
-        this.nextLevel = 100;
-        this.updateCharOutputs();
-    }
-    upStat(stat) {
-        this.stats[stat].value += 1
-        this.updateCharOutputs();
-        selectCharacter(this.name);
-    }
-    getIdleDamage() {
-        return this.idleDamage; 
-    }
-    getClickDamage() {
-        return this.clickDamage;
-    }
-    updateCharOutputs() {
-        this.clickDamage = this.stats.str.value;
-        this.idleDamage = this.stats.dex.value;
-    }
-};
+var partyClickDamage = 0;
+var partyIdleDamage = 0;
 
 //load on startup
 load();
+
+function updatePartyOutputs() {
+    //set to 0
+    partyClickDamage = 0;
+    partyIdleDamage = 0;
+    //iterate through party list then add to total
+    for (const [key, value] of Object.entries(partyList)) {
+        if (value !== null) {
+            partyClickDamage += value.getClickDamage()
+            partyIdleDamage += value.getIdleDamage()
+        }
+    }
+
+}
 
 //save function
 function save() {
     //make dict of relevant data
     var save = {
-    gold: gold,
-    stage: stage,
-    charList: charList,
-    partyList: partyList
+        gold: gold,
+        stage: stage,
+        charList: charList,
+        partyList: partyList
     };
     //dump it into local storage
     console.log("GAME SAVED. GAME DATA: ")
@@ -197,16 +55,18 @@ function load() {
         document.getElementById("combat-log").innerHTML = document.getElementById("combat-log").innerHTML + "Save state found. Loading."
         console.log(savegame)
         //if statements are failsafes. don't want to load undefined into these
-        if (typeof savegame.gold !== "undefined") {gold = savegame.gold};
+        if (typeof savegame.gold !== "undefined") { gold = savegame.gold };
         document.getElementById("gold").innerHTML = gold;
-        if (typeof savegame.stage !== "undefined") {stage = savegame.stage};
+        if (typeof savegame.stage !== "undefined") { stage = savegame.stage };
         generateEnemy();
-        if (typeof savegame.charList !== "undefined") {charList = savegame.charList};
-        if (typeof savegame.partyList !== "undefined") {partyList = savegame.partyList};
+        if (typeof savegame.charList !== "undefined") { charList = savegame.charList };
+        if (typeof savegame.partyList !== "undefined") { partyList = savegame.partyList };
         populateCharListDropdown();
     }
     //start autoattacking
     autoAttack();
+    //update party outputs for stuff
+    updatePartyOutputs();
 }
 
 function populateCharListDropdown() {
@@ -214,7 +74,7 @@ function populateCharListDropdown() {
     for (const [key, value] of Object.entries(charList)) {
         var btn = document.createElement("button");
         btn.appendChild(document.createTextNode(key));
-        btn.addEventListener("click", function() {selectCharacter(key);})
+        btn.addEventListener("click", function () { selectCharacter(key); })
         btn.id = key;
         charDiv.appendChild(btn);
     }
@@ -236,9 +96,9 @@ function startNewGame() {
 
 function addToParty(slot, charname) {
     partyList[slot] = charList[charname];
-    var partyButton = document.getElementById("char"+slot);
+    var partyButton = document.getElementById("char" + slot);
     partyButton.innerHTML = charname;
-    partyButton.addEventListener("click", function() {selectCharacter(charname)})
+    partyButton.addEventListener("click", function () { selectCharacter(charname) })
 }
 
 function clearSave() {
@@ -250,9 +110,9 @@ function clearSave() {
     }
 }
 
-function generateEnemy(){
-    gold = gold + Math.floor(1 * Math.pow(1.1, stage-1));
-    enemyMaxHP = Math.floor(10 * Math.pow(1.1, stage-1));
+function generateEnemy() {
+    gold = gold + Math.floor(1 * Math.pow(1.1, stage - 1));
+    enemyMaxHP = Math.floor(10 * Math.pow(1.1, stage - 1));
     enemyHP = enemyMaxHP;
 }
 
@@ -265,7 +125,7 @@ function selectCharacter(charname) {
     toggleButton(document.getElementById(charname));
     ////add to party button - dropdown for 12345 slots
     ////how to check if char is already in party?
-    
+
     var statDisplay = document.getElementById("statDisplay");
     statDisplay.innerHTML = "";
     var toggle = false;
@@ -279,7 +139,7 @@ function selectCharacter(charname) {
             statRow.style.backgroundColor = "lightgray";
             toggle = !toggle;
         }
-        //display all the stats
+        //display all the stats + their values
         var statName = document.createElement("div");
         statName.className = "statName";
         statName.appendChild(document.createTextNode(key.toUpperCase()));
@@ -289,10 +149,11 @@ function selectCharacter(charname) {
         statValue.className = "statValue";
         statValue.appendChild(document.createTextNode(value.value));
         statRow.appendChild(statValue);
+
         //upstat button per stat
         var upStatButton = document.createElement("button");
         upStatButton.className = "upStatButton";
-        upStatButton.addEventListener("click", function() {charList[charname].upStat(key)});
+        upStatButton.addEventListener("click", function () { charList[charname].upStat(key) });
         upStatButton.appendChild(document.createTextNode("+"))
         var upStat = document.createElement("div");
         upStat.className = "upStat";
@@ -303,39 +164,39 @@ function selectCharacter(charname) {
     }
 }
 
-function clickAttack(){
-    var totalPartyClickDamage = 0;
-    for (const [key, value] of Object.entries(partyList)) {
-        if (value !== null) {
-            totalPartyClickDamage += value.getClickDamage()
-        }
-    }
-    attack(totalPartyClickDamage);
-    writeToLog("<br>Clicked for " + totalPartyClickDamage + " damage.");
+function clickAttack() {
+    attack(partyClickDamage);
+    writeToLog("<br>Clicked for " + partyClickDamage + " damage.");
 }
 
-function idleAttack(){
-    var totalPartyIdleDamage = 0
-    for (const [key, value] of Object.entries(partyList)) {
-        if (value !== null) {
-            totalPartyIdleDamage += value.getIdleDamage()
-        }
-    }
-    if (totalPartyIdleDamage > 0) {
-        attack(totalPartyIdleDamage);
-        writeToLog("<br>Idly attacked for " + totalPartyIdleDamage + " damage.");
+function idleAttack() {
+    if (partyIdleDamage > 0) {
+        attack(partyIdleDamage);
+        writeToLog("<br>Idly attacked for " + partyIdleDamage + " damage.");
     }
 }
 
-function attack(dmg){
+//handles taking damage, enemy dying, xp distribution, stage completion
+function attack(dmg) {
     enemyHP = enemyHP - dmg;
     if (enemyHP <= 0) {
+        //enemy death
+        
         writeToLog("<br>Killed the enemy! Gained " + stage + "g!");
+
+        //stage
         enemysKilledStage = enemysKilledStage + 1;
         if (enemysKilledStage >= 10) {
-            writeToLog("<br>Stage advance! Moved to stage " + (stage+1));
+            //stage completion
+            writeToLog("<br>Stage advance! Moved to stage " + (stage + 1));
             enemysKilledStage = 0;
             stage = stage + 1;
+            document.getElementById("stage").innerHTML = stage;
+        }
+
+        //xp distribution
+        for (const [key, value] of Object.entries(partyList)) {
+
         }
         generateEnemy();
     }
@@ -348,7 +209,7 @@ function writeToLog(message) {
     if (lines.length > 10) {
         document.getElementById("combat-log").innerHTML = lines[1];
         for (var i = 2; i < lines.length; i++) {
-            document.getElementById("combat-log").innerHTML = document.getElementById("combat-log").innerHTML + "<br>" +lines[i];
+            document.getElementById("combat-log").innerHTML = document.getElementById("combat-log").innerHTML + "<br>" + lines[i];
         }
     }
 }
@@ -368,7 +229,7 @@ function autoAttack() {
     setTimeout(autoAttack, attackInterval);
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (!event.target.matches(".dropdownButton")) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var i;
