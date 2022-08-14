@@ -4,6 +4,7 @@
 3. should idle damage crit? maybe reduced crit damage on idle?
 4. unique monsters, like how trimps or tap titans does it
     - monsters that skip stages, increase gold drop, increase item drop, recover mana, etc
+5. bigint support?
 # stats to implement (system):
 - ~~str (click damage)~~
 - ~~dex (idle damage)~~

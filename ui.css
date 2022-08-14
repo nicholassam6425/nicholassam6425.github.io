@@ -133,8 +133,10 @@ button.clear-save {
 }
 /* div for the dropdown button + dropdown content */
 .charDropdown {
+    display: flex;
+    flex-direction: row;
     position: relative;
-    display: inline-block;
+    float: left;
 }
 /* div for dropdown content */
 .dropdown-content {

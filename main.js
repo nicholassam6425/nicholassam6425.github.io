@@ -120,12 +120,19 @@ function dropdown() {
     document.getElementById("charListDropdown").classList.toggle("show");
 }
 
+function deselect(char) {
+
+}
+
 function selectCharacter(charname) {
     //disable selected character in charlistdropdown
     toggleButton(document.getElementById(charname));
     ////add to party button - dropdown for 12345 slots
     ////how to check if char is already in party?
 
+    //current sp display
+    updateDisplayedSP(charList[charname]);
+    
     var statDisplay = document.getElementById("statDisplay");
     statDisplay.innerHTML = "";
     var toggle = false;
@@ -164,6 +171,18 @@ function selectCharacter(charname) {
     }
 }
 
+function updateDisplayedSP(chara) {
+    //how do we know which character is selected?
+    //probably just fucking pollute global namespace, fuck it
+    //save global var of current name
+    //
+    //better idea: we just put a boolean on each character
+    //when they get upstatted, they update displayed SP, if they level, do same
+    //^ holy fuck im TOO smart
+    console.log(chara);
+    document.getElementById("spdisplay").innerHTML = chara.sp;
+}
+
 function clickAttack() {
     attack(partyClickDamage);
     writeToLog("<br>Clicked for " + partyClickDamage + " damage.");
@@ -196,7 +215,9 @@ function attack(dmg) {
 
         //xp distribution
         for (const [key, value] of Object.entries(partyList)) {
-
+            if (value !== null) {
+                value.getXP(stage);
+            }
         }
         generateEnemy();
     }

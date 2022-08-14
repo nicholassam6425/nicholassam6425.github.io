@@ -53,6 +53,8 @@ class character {
         this.stats = new statlist();
         this.xp = 0;
         this.nextLevel = 100;
+        this.sp = 0;
+        this.selected = false;
         this.updateCharOutputs();
     }
     //upgrade a stat
@@ -60,6 +62,9 @@ class character {
         this.stats[stat].value += 1
         this.updateCharOutputs();
         selectCharacter(this.name);
+        if (this.selected) {
+            updateDisplayedSP(this);
+        }
     }
     //idle damage getter
     getIdleDamage() {
@@ -74,10 +79,14 @@ class character {
     }
     getXP(gainedXP) {
         this.xp += gainedXP;
-        //use while to handle levelling up twice
+        //use while to handle levelling up multiple times
         while (this.xp >= this.nextLevel) {
             this.xp -= this.nextLevel;
             this.level += 1;
+            this.sp += 1;
+        }
+        if (this.selected) {
+            updateDisplayedSP(this);
         }
     }
     //called when: upgrading stat, equipping items.
