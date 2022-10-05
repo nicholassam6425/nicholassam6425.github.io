@@ -1,4 +1,5 @@
 1. possible to fuck with the game possibly by setting charnames to element ids
+    - idk
 2. figure out how stats interact with party. i.e add up or take max or whatever?
     - stat dependent. will figure out later.
 3. should idle damage crit? maybe reduced crit damage on idle?
@@ -41,5 +42,5 @@
 # possible issues
 - characters in the party are saved as separate entities than their charlist self. could cause an issue. should be a relatively easy fix
 # currently working on:
-xp distribution (attack function)
-levelling system (character class)
+~~xp distribution (attack function)~~ pretty much done both, 
+~~levelling system (character class)~~ might encounter bugs later idk

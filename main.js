@@ -9,6 +9,8 @@ var partyList = { 1: null, 2: null, 3: null, 4: null, 5: null };
 var attackInterval = 1000
 var partyClickDamage = 0;
 var partyIdleDamage = 0;
+var partyAtkSpeed = 0;
+var currentlySelected = null;
 
 //load on startup
 load();
@@ -17,11 +19,13 @@ function updatePartyOutputs() {
     //set to 0
     partyClickDamage = 0;
     partyIdleDamage = 0;
+    partyAtkSpeed = 0;
     //iterate through party list then add to total
     for (const [key, value] of Object.entries(partyList)) {
         if (value !== null) {
             partyClickDamage += value.getClickDamage()
             partyIdleDamage += value.getIdleDamage()
+            partyAtkSpeed += value.getAtkSpeed();
         }
     }
 
@@ -120,13 +124,21 @@ function dropdown() {
     document.getElementById("charListDropdown").classList.toggle("show");
 }
 
-function deselect(char) {
-
+function deselect() {
+    toggleButton(document.getElementById(currentlySelected.name));
+    currentlySelected.selected = false;
 }
 
 function selectCharacter(charname) {
     //disable selected character in charlistdropdown
     toggleButton(document.getElementById(charname));
+    //toggle off currently selected character
+    if (currentlySelected != null)
+    {
+        deselect();
+    }
+    charList[charname].selected = true;
+    currentlySelected = charList[charname];
     ////add to party button - dropdown for 12345 slots
     ////how to check if char is already in party?
 
@@ -172,13 +184,6 @@ function selectCharacter(charname) {
 }
 
 function updateDisplayedSP(chara) {
-    //how do we know which character is selected?
-    //probably just fucking pollute global namespace, fuck it
-    //save global var of current name
-    //
-    //better idea: we just put a boolean on each character
-    //when they get upstatted, they update displayed SP, if they level, do same
-    //^ holy fuck im TOO smart
     console.log(chara);
     document.getElementById("spdisplay").innerHTML = chara.sp;
 }
@@ -216,7 +221,7 @@ function attack(dmg) {
         //xp distribution
         for (const [key, value] of Object.entries(partyList)) {
             if (value !== null) {
-                value.getXP(stage);
+                value.getXP(Math.floor(Math.pow(1.5, stage)));
             }
         }
         generateEnemy();
@@ -236,7 +241,7 @@ function writeToLog(message) {
 }
 
 function calculateAtkInterval() {
-    attackInterval = 10000;
+    attackInterval = (100/(100+partyAtkSpeed))*10000;
 }
 
 function updateElements() {
