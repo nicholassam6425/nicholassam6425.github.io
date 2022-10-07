@@ -59,9 +59,9 @@ class character {
     }
     //upgrade a stat
     upStat(stat) {
-        if (this.sp > 0) 
+        if (this.sp >= this.stats[stat].cost) 
         {
-            this.sp -= 1;
+            this.sp -= this.stats[stat].cost;
             this.stats[stat].value += 1
             this.updateCharOutputs();
             selectCharacter(this.name);
