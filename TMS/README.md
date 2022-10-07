@@ -1,3 +1,5 @@
+Too Many Stats!
+
 HTML5 Incremental game
 
 ---
