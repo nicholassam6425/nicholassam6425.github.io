@@ -40,7 +40,7 @@
 - rfl (health)
 - spk (health)
 # possible issues
-- characters in the party are saved as separate entities than their charlist self. could cause an issue. should be a relatively easy fix
+- characters in the party are saved as separate entities than their charlist self. could cause an issue. should be a relatively easy fix. gonna keep doing it this way until the tech debt is too insane tho.
 # currently working on:
 ~~xp distribution (attack function)~~ pretty much done both, 
 ~~levelling system (character class)~~ might encounter bugs later idk
