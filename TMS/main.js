@@ -10,7 +10,10 @@ var attackInterval = 1000
 var partyClickDamage = 0;
 var partyIdleDamage = 0;
 var partyAtkSpeed = 0;
+var partyCritChance = 0;
 var currentlySelected = null;
+//i love adding event listeners that need parameters and also removing them
+var selectCharacterTempValue = null;
 
 //load on startup
 load();
@@ -20,12 +23,14 @@ function updatePartyOutputs() {
     partyClickDamage = 0;
     partyIdleDamage = 0;
     partyAtkSpeed = 0;
+    partyCritChance = 0;
     //iterate through party list then add to total
     for (const [key, value] of Object.entries(partyList)) {
         if (value !== null) {
-            partyClickDamage += value.getClickDamage()
-            partyIdleDamage += value.getIdleDamage()
+            partyClickDamage += value.getClickDamage();
+            partyIdleDamage += value.getIdleDamage();
             partyAtkSpeed += value.getAtkSpeed();
+            partyCritChance = Math.max(partyCritChance, value.getCritChance());
         }
     }
 
@@ -67,6 +72,8 @@ function load() {
         if (typeof savegame.partyList !== "undefined") { partyList = savegame.partyList };
         populateCharListDropdown();
     }
+    //start enemy damage
+    enemyAttack();
     //start autoattacking
     autoAttack();
     //update party outputs for stuff
@@ -101,10 +108,18 @@ function startNewGame() {
 function addToParty(slot, charname) {
     partyList[slot] = charList[charname];
     var partyButton = document.getElementById("char" + slot);
+    //might not need to remove and re-add but whatever i dont wanna test it
+    if (partyButton.disabled) {
+        partyButton.disabled = false;
+    }
+    partyButton.removeEventListener("click", characterButtonClickFunction)
     partyButton.innerHTML = charname;
-    partyButton.addEventListener("click", function () { selectCharacter(charname) })
+    selectCharacterTempValue = charname;
+    partyButton.addEventListener("click", characterButtonClickFunction)
 }
-
+function characterButtonClickFunction() {
+    selectCharacter(selectCharacterTempValue);
+}
 function clearSave() {
     var deleteConfirmation = confirm("This will DELETE your save. Are you sure?");
     if (deleteConfirmation) {
@@ -133,8 +148,7 @@ function selectCharacter(charname) {
     //disable selected character in charlistdropdown
     toggleButton(document.getElementById(charname));
     //toggle off currently selected character
-    if (currentlySelected != null)
-    {
+    if (currentlySelected != null) {
         deselect();
     }
     charList[charname].selected = true;
@@ -144,7 +158,7 @@ function selectCharacter(charname) {
 
     //current sp display
     updateDisplayedSP(charList[charname]);
-    
+
     var statDisplay = document.getElementById("statDisplay");
     statDisplay.innerHTML = "";
     var toggle = false;
@@ -189,23 +203,52 @@ function updateDisplayedSP(chara) {
 }
 
 function clickAttack() {
-    attack(partyClickDamage);
+    attack(partyClickDamage*critCheck(1));
     writeToLog("<br>Clicked for " + partyClickDamage + " damage.");
 }
 
 function idleAttack() {
+    idleDamage = partyIdleDamage;
+    attack(partyIdleDamage*critCheck(0));
     if (partyIdleDamage > 0) {
-        attack(partyIdleDamage);
         writeToLog("<br>Idly attacked for " + partyIdleDamage + " damage.");
     }
 }
+//handles crits
+//0 = idle, 1 = active (includes spellcasting)
+function critCheck(damageType) {
+    //handle >100% crit chance
+    //for every 100% crit chance, deal +100% crit damage
+    //i.e 200% crit chance = guaranteed 300% damage.
+    //250% crit chance = 50/50 300%/400% damage
+    critMulti = 1;
+    temp = partyCritChance;
+    while (temp >= 100) {
+        temp -= 100
+        critMulti += 1
+    }
 
+    if (Math.random() * 100 >= temp) {
+        //you land crit
+        if (damageType == 0) {
+            //idle crits are weaker
+            return (critMulti+1) * 0.8 //oh shit i need a crit damage stat
+        }
+        else {
+            //active crits
+            return critMulti+1
+        }
+    } else {
+        //miss crit
+        return critMulti;
+    }
+}
 //handles taking damage, enemy dying, xp distribution, stage completion
 function attack(dmg) {
     enemyHP = enemyHP - dmg;
     if (enemyHP <= 0) {
         //enemy death
-        
+        //if statement here when settings
         writeToLog("<br>Killed the enemy! Gained " + stage + "g!");
 
         //stage
@@ -232,6 +275,8 @@ function attack(dmg) {
 function writeToLog(message) {
     document.getElementById("combat-log").innerHTML = document.getElementById("combat-log").innerHTML + message;
     const lines = document.getElementById("combat-log").innerHTML.split("<br>");
+    //delete old log lines if too many lines
+    //10 becomes settings option when i add
     if (lines.length > 10) {
         document.getElementById("combat-log").innerHTML = lines[1];
         for (var i = 2; i < lines.length; i++) {
@@ -241,7 +286,7 @@ function writeToLog(message) {
 }
 
 function calculateAtkInterval() {
-    attackInterval = (100/(100+partyAtkSpeed))*10000;
+    attackInterval = (100 / (100 + partyAtkSpeed)) * 10000;
 }
 
 function updateElements() {
@@ -254,7 +299,9 @@ function autoAttack() {
     idleAttack();
     setTimeout(autoAttack, attackInterval);
 }
-
+function enemyAttack() {
+    setTimeout(enemyAttack, 2000);
+}
 window.onclick = function (event) {
     if (!event.target.matches(".dropdownButton")) {
         var dropdowns = document.getElementsByClassName("dropdown-content");

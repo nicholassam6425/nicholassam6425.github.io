@@ -52,10 +52,14 @@ class character {
         this.level = 1;
         this.stats = new statlist();
         this.xp = 0;
-        this.nextLevel = 100;
+        this.nextLevel = 10;
         this.sp = 0;
         this.selected = false;
+        this.maxHP = 10;
+        this.currentHP = 10;
         this.updateCharOutputs();
+        this.data = [];
+        this.alive = true;
     }
     //upgrade a stat
     upStat(stat) {
@@ -81,8 +85,20 @@ class character {
     getAtkSpeed() {
         return this.stats.qck.value - this.stats.pre.value;
     }
-    takeDamage() {
-        //health/dying here
+    getCritChance() {
+        return this.stats.luk.value + this.stats.acc.value
+    }
+    getCritDamage() {
+        return 1;
+    }
+    takeDamage(damageTaken) {
+        this.currentHP -= damageTaken;
+        if(currentHP <= 0) {
+            die();
+        }
+    }
+    die() {
+        
     }
     getXP(gainedXP) {
         this.xp += gainedXP;
