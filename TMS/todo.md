@@ -45,8 +45,12 @@
 # currently working on:
 implementing stats
 - ~~crits~~
-- health & enemy dealing damage
-- character death
+- ~~health & enemy dealing damage~~
+- ~~character death~~
+- remove from party
+- character revive
+    - how
+- items
 # notes ( u can ignore :) ):
 - str: party total
 - dex: party total

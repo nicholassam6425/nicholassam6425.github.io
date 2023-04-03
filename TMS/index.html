@@ -1,50 +1,57 @@
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="ui.css"></link>
-    </head>
-    <body>
-        <div id="header">
-            <div id="header-container">
-                <button class="save" onClick="save()">Save</button>
-                <button class="load" onclick="load()">Load</button>
-                <button class="clear-save" onClick="clearSave()">Delete Save</button>
-                Gold: <span id="gold">0</span>
-                <br>
-                Stage: <span id="stage">1</span>
-            </div>
-            
+
+<head>
+    <link rel="stylesheet" type="text/css" href="ui.css">
+    </link>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-container">
+            <button class="save" onClick="save()">Save</button>
+            <button class="load" onclick="load()">Load</button>
+            <button class="clear-save" onClick="clearSave()">Delete Save</button>
+            Gold: <span id="gold">0</span>
+            <br>
+            Stage: <span id="stage">1</span>
         </div>
-        <div id="body">
-            <div id="left">
-                <div id="currentCharStats">
+
+    </div>
+    <div id="body">
+        <div id="left">
+            <div id="currentCharStats">
+                <div id="charStatsHeader">
                     <div class="charDropdown">
                         <button onClick="dropdown()" class="dropdownButton">Characters</button>
                         <div id="charListDropdown" class="dropdown-content">
                         </div>
+                    
+                    </div>
+                    <div id="SPheaderdiv">
                         <div class="spdiv">SP: <span id="spdisplay">-</span></div>
                     </div>
                     
-                    <div id="statDisplay">
-                    </div>
                 </div>
-            </div>
-            <div id="right">
-                <div id="party-div">
-                    <!--<button class="character" id="char1" disabled></button>
-                    <button class="character" id="char2" disabled></button>
-                    <button class="character" id="char3" disabled></button>
-                    <button class="character" id="char4" disabled></button>-->
-                    <button class="character" id="char5"></button>
-                    <button id="enemy" onClick="clickAttack()">10/10</button>
-                </div>
-                <div id="combat-log">
-
+                <div id="statDisplay">
+                        
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="utilities.js" defer></script>
-        <script type="text/javascript" src="main.js" defer></script>
-    </body>
+        <div id="right">
+            <div id="party-div">
+                <!--<button class="character" id="char1" disabled></button>
+                    <button class="character" id="char2" disabled></button>
+                    <button class="character" id="char3" disabled></button>
+                    <button class="character" id="char4" disabled></button>-->
+                <button class="character" id="char5"></button>
+                <button id="enemy" onClick="clickAttack()">10/10</button>
+            </div>
+            <div id="combat-log">
+
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="utilities.js" defer></script>
+    <script type="text/javascript" src="main.js" defer></script>
+</body>
 </html>
-
-

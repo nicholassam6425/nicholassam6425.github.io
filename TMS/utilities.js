@@ -5,6 +5,11 @@ class stat {
         this.value = value;
         this.cost = cost;
         this.scaling = scaling;
+        this.scaled_value = value * scaling;
+    }
+    add(num) { 
+        this.value += num;
+        this.scaled_value = value * scaling
     }
 }
 
@@ -55,18 +60,17 @@ class character {
         this.nextLevel = 10;
         this.sp = 0;
         this.selected = false;
-        this.maxHP = 10;
-        this.currentHP = 10;
+        this.maxHP = 10 + ((this.stats.con.value * this.stats.con.scaling) * (this.stats.per+1));
+        this.currentHP = maxHP;
         this.updateCharOutputs();
-        this.data = [];
+        this.data = {};
         this.alive = true;
     }
     //upgrade a stat
     upStat(stat) {
-        if (this.sp >= this.stats[stat].cost) 
-        {
+        if (this.sp >= this.stats[stat].cost) {
             this.sp -= this.stats[stat].cost;
-            this.stats[stat].value += 1
+            this.stats[stat].add(1);
             this.updateCharOutputs();
             selectCharacter(this.name);
             if (this.selected) {
@@ -92,13 +96,20 @@ class character {
         return 1;
     }
     takeDamage(damageTaken) {
+        writeToLog("<br>" + this.name + " took " + damageTaken + " damage")
         this.currentHP -= damageTaken;
-        if(currentHP <= 0) {
-            die();
+        this.data['partyButton'].innerHTML = this.name + "<br>" + this.currentHP + "/" + this.maxHP;
+        if (this.currentHP <= 0) {
+            this.die();
+            toggleButton(this.data['partyButton'])
+            return 
         }
+
     }
     die() {
-        
+        writeToLog("<br>lole u r dead")
+        this.alive = false;
+        this.updateCharOutputs()
     }
     getXP(gainedXP) {
         this.xp += gainedXP;
@@ -114,12 +125,18 @@ class character {
     }
     //called when: upgrading stat, equipping items.
     updateCharOutputs() {
-        this.clickDamage =
-            (this.stats.str.value * this.stats.str.scaling) +
-            (this.stats.dom.value * this.stats.dom.scaling);
+        if (this.alive) {
+            this.clickDamage =
+                (this.stats.str.value * this.stats.str.scaling) +
+                (this.stats.dom.value * this.stats.dom.scaling);
 
-        this.idleDamage =
-            (this.stats.dex.value * this.stats.dex.scaling);
+            this.idleDamage =
+                (this.stats.dex.value * this.stats.dex.scaling);
+        }
+        else {
+            this.clickDamage = 0
+            this.idleDamage = 0
+        }
         updatePartyOutputs();
     }
 };

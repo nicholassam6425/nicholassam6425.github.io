@@ -108,14 +108,16 @@ function startNewGame() {
 function addToParty(slot, charname) {
     partyList[slot] = charList[charname];
     var partyButton = document.getElementById("char" + slot);
-    //might not need to remove and re-add but whatever i dont wanna test it
+    
     if (partyButton.disabled) {
         partyButton.disabled = false;
     }
+    //might not need to remove and re-add but whatever i dont wanna test it
     partyButton.removeEventListener("click", characterButtonClickFunction)
-    partyButton.innerHTML = charname;
+    partyButton.innerHTML = charname + "<br>" + charList[charname].currentHP + "/" + charList[charname].maxHP;
     selectCharacterTempValue = charname;
     partyButton.addEventListener("click", characterButtonClickFunction)
+    charList[charname].data['partyButton'] = partyButton
 }
 function characterButtonClickFunction() {
     selectCharacter(selectCharacterTempValue);
@@ -154,7 +156,7 @@ function selectCharacter(charname) {
     charList[charname].selected = true;
     currentlySelected = charList[charname];
     ////add to party button - dropdown for 12345 slots
-    ////how to check if char is already in party?
+    ////how to check if char is already in party? fuck it do it implicitly
 
     //current sp display
     updateDisplayedSP(charList[charname]);
@@ -300,8 +302,15 @@ function autoAttack() {
     setTimeout(autoAttack, attackInterval);
 }
 function enemyAttack() {
+    for (let i = 5; i > 0; i--) {
+        if (partyList[i] != null && partyList[i].alive) {
+            partyList[i].takeDamage(stage);
+            break;
+        }
+    }
     setTimeout(enemyAttack, 2000);
 }
+
 window.onclick = function (event) {
     if (!event.target.matches(".dropdownButton")) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
