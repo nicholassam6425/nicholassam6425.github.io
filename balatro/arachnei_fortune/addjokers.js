@@ -72,7 +72,7 @@ let consumables = [
   {
     name: "Red Envelope",
     text: [
-      "Gain {C:gold}$#1#{}, based on",
+      "Gain {C:gold}$0{}, based on",
       "your current {C:gold}Luck",
     ],
     image_url: "img/c_envelope_arachnei.png",
