@@ -15,15 +15,12 @@ let jokers = [
   {
     name: "The Fortune Tree",
     text: [
-      "{X:mult,C:white}X0.5{} Mult for each {C:gold}Luck{}.",
-      "Earn {C:money}$1{} for each {C:gold}Luck{}.",
-      "Gain {C:chips}+1{} for each {C:gold}Luck{}.",
-      "Every hand, gain {C:gold}2 Luck{}.",
-      "{C:inactive}(Current Luck: {C:gold}0{C:inactive})",
-      "{C:inactive}(Currently {X:mult,C:white}X1{C:inactive} Mult)"
+      "Legends say the extremely",
+      "{C:gold}fortunate{} may encounter",
+      "this {C:purple}Mythical{} tree...",
     ],
-    image_url: "img/j_fortune_tree_arachnei.png",
-    rarity: "Mythical"
+    image_url: "img/locked.png",
+    rarity: "Locked"
   },
   {
     name: "Dumplings",
@@ -268,7 +265,7 @@ let rarities = {
   "Sticker": "#5d5dff",
   "Boss Blind": "#5d5dff",
   "Showdown": "#4584fa",
-  "Mythical": "#e4cd29",
+  "Locked": "#576264"
 }
 
 regex = /{([^}]+)}/g;
